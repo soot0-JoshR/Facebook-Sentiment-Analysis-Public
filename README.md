@@ -19,7 +19,7 @@ A tool for data collection and sentiment analysis on Facebook
    - UI for easy access
 
 ### 4. UML Use Case Diagram
-![alt text](https://github.com/soot0-JoshR/Facebook-Sentiment-Analysis/blob/main/images/UML.drawio.png)
+![image](https://github.com/soot0-JoshR/Facebook-Sentiment-Analysis/blob/main/images/UML.drawio.png)
 
 ### 5. UI Sketches
 
