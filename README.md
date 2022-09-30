@@ -23,7 +23,7 @@ A tool for data collection and sentiment analysis on Facebook
 
 ### 5. UI Sketches
 
-  ![alt text](https://github.com/soot0-JoshR/Facebook-Sentiment-Analysis/blob/main/images/Sketchy_UI.png)
+  ![image](https://github.com/soot0-JoshR/Facebook-Sentiment-Analysis/blob/main/images/Sketchy_UI.png)
   
 ### 6. Key use-cases
 
