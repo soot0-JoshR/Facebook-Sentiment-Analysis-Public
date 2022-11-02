@@ -1,7 +1,7 @@
 import json
 import facebook
 
-# Josh's testing page
+
 token = "ACCESS_TOKEN"
 graph = facebook.GraphAPI(token)
 page = graph.get_object(id='PAGE_ID', fields='about,feed')
