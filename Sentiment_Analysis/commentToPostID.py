@@ -4,12 +4,12 @@ import facebook
 # Testing page
 
 # Find out how to automate making a token, then assigns GraphAPI to graph
-token = "EAAIshi8WrOkBAJNeSNUht75m9uXw9BZAB38cE2nSNEv8foSTd6kqegIcF3dUhxHl7UeUyvmkvs7j90h2pGh5c3iFghzE9sUeruM7F4llPP5bA8LlSMa82eRZB8JS3fZALRfOpnAyOygWifgQrtH2x4gOcVgbXIQiuMWhkcYG1oaQQF9cCaB"
+token = "ACCESS_TOKAN"
 graph = facebook.GraphAPI(token)
 
 # Input page ID and return the adjacent fields "about" and "feed" then get feed comments and writes to comments
-page = graph.get_object(id='354213184965483', fields='about,feed')
-comments = graph.get_object(id='354213184965483', fields='feed{comments}')
+page = graph.get_object(id='USER_ID', fields='about,feed')
+comments = graph.get_object(id='USER_ID', fields='feed{comments}')
 
 # json dumps are put into post_text
 post_text = json.dumps(page, indent=4)
