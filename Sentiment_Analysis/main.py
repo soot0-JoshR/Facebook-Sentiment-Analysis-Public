@@ -1,6 +1,6 @@
 from pyfacebook import GraphAPI
 
-api = GraphAPI(app_id="2280642395432600", app_secret="921e9b85ac7198001c4199778dbd3718", oauth_flow=True)
+api = GraphAPI(app_id="APP_ID", app_secret="APP_SECRET", oauth_flow=True)
 
 api.get_authorization_url()
 
