@@ -4,7 +4,7 @@ import facebook
 # Testing page
 
 # Find out how to automate making a token, then assigns GraphAPI to graph
-token = "ACCESS_TOKAN"
+token = "ACCESS_TOKEN"
 graph = facebook.GraphAPI(token)
 
 # Input page ID and return the adjacent fields "about" and "feed" then get feed comments and writes to comments
