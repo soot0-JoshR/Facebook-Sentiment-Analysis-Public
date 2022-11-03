@@ -16,17 +16,14 @@ other models for the pipeline:
 sentiment = pipeline('sentiment-analysis', model='distilbert-base-uncased-finetuned-sst-2-english')
 
 # testing page token
-token = "EAAgaO2ZCW5pgBAPf77mr8ZC4MjK5U9lxONJWhN6iqWMJY" \
-        "3rE1iyVb3BbpMpNNqe2jrgaDoZCGumdRD3uReqQZAdaoX5" \
-        "6geI4DXfeLbZA17XIGSEzIKiZCAAUb2GAOcqyred0ZCC5m" \
-        "e7e0fQegcwcQwDvFhWHyFswjDa2NcGGKva16CAoEnRiaps"
+token = "ACCESS_TOKEN"
 
 # Facebook Graph API access
 graph = facebook.GraphAPI(token)
 
 # dictionaries to store post and comment data
-post_data = graph.get_object(id='106022105635449', fields='feed')
-comment_data = graph.get_object(id='106022105635449', fields='feed{comments}')
+post_data = graph.get_object(id='PAGE_ID', fields='feed')
+comment_data = graph.get_object(id='PAGE_ID', fields='feed{comments}')
 
 # a list of keywords to search posts for
 keywords = ["Battery electric", "BEV", "Li-ion", "Lithium-ion", "lithium batteries", "lithium battery"
