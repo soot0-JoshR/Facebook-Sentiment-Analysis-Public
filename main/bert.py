@@ -1,10 +1,8 @@
 import os
 import numpy
 import json
-from nltk import tokenize
 from transformers import AutoModelForSequenceClassification
-from transformers import TFAutoModelForSequenceClassification
-from transformers import pipeline, AutoTokenizer, AutoConfig
+from transformers import AutoTokenizer, AutoConfig
 from scipy.special import softmax
 
 #
