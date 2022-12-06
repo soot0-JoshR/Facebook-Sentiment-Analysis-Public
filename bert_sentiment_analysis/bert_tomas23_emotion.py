@@ -9,27 +9,6 @@ import time
 
 #
 """
-# unused code
-def clean(text):
-    rwords = ['@user', 'http', '#']
-    for word in rwords:
-        text = text.replace(word, "")
-    return text
-
-
-def preprocess(text):
-    text = text.replace('\n', ' ')
-    new_text = []
-    for t in text.split(" "):
-        t = '#' if t.startswith('\\x') else t
-        t = '#' if t.startswith('#') else t
-        t = '@user' if t.startswith('@') and len(t) > 1 else t
-        t = 'http' if t.startswith('http') else t
-        new_text.append(t)
-    return " ".join(new_text)
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 other models for the pipeline:
     'distilbert-base-uncased-finetuned-sst-2-english'
     'Seethal/sentiment_analysis_generic_dataset'
