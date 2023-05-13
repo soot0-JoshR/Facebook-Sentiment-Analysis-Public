@@ -1,11 +1,13 @@
-import os
-import numpy
-import json
 from transformers import AutoModelForSequenceClassification
 from transformers import AutoTokenizer, AutoConfig
 from scipy.special import softmax
-import csv
-import time
+import datetimeimport numpy
+import json
+
+
+# using this to keep track of how long it takes to process the data
+now = datetime.datetime.now()
+print("start time: " + str(now) + "\n")
 
 #
 """
@@ -19,7 +21,6 @@ other models for the pipeline:
     'Tomas23/twitter-roberta-base-mar2022-finetuned-emotion'
 """
 
-
 MODEL = f"Tomas23/twitter-roberta-base-mar2022-finetuned-emotion"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 config = AutoConfig.from_pretrained(MODEL)
@@ -27,9 +28,6 @@ config = AutoConfig.from_pretrained(MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 
 print("\n\n")
-
-# transformer pipeline
-# sentiment = pipeline('sentiment-analysis', model=MODEL)
 
 # a list of keywords to search posts for
 keywords = ["battery", "Battery", "Electric", "electric", "Electro", "electro", "BEV", "li-ion", "Li-ion",
@@ -42,21 +40,11 @@ keywords = ["battery", "Battery", "Electric", "electric", "Electro", "electro", 
 
 posts = []
 kwHits = []
-#dataList = list(csv.reader(open('data.csv', 'rt', encoding='utf-8'), delimiter='\t'))
+
 with open('data.json', 'r', encoding="utf-8") as file:
     dataList = json.loads(file.read())
 
 file.close()
-
-"""print(dataList)
-
-d = dict()
-key = dataList[6][0]      # cell A7
-value = dataList[6][3]    # cell D7
-d[key] = value       # add the entry to the dictionary
-print(d[key])"""
-
-#dataList[e][2]
 
 for e in dataList:
     for kw in keywords:
@@ -68,8 +56,6 @@ for e in dataList:
 
 for kwHit in kwHits:
     post = kwHit[2]
-    post = preprocess(post)  # generalize text such as links and usernames
-    post = clean(post)  # remove generalized text
 
     encoded_input = tokenizer(post, return_tensors='pt')  # prepare post text for the model
     result = model(**encoded_input)  # feed our encoded post text into the model
@@ -84,7 +70,8 @@ for kwHit in kwHits:
         # print(f" {label} {numpy.round(float(results), 4)}")  # print the result
         kwHit.append(f"{numpy.round(float(results), 4)}")
 
+now = datetime.datetime.now()
+print("finish time: " + str(now) + "\n")
 
 with open('data.json', 'w', encoding='utf-8') as file:
     json.dump(kwHits, file, ensure_ascii=False).encode("utf-8")
-
