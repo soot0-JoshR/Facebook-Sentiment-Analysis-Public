@@ -44,23 +44,94 @@ for e in data:
             generalPScores[sentiment] += float(e[sentiment])
     count += 1
 
-resultData = {"count": count,
-              "electric_count": eCount, "electricScores": electricScores,
-              "hydrogen_count": hCount, "hydrogenScores": hydrogenScores,
-              "naturalG_count": nCount, "naturalGScores": naturalGScores,
-              "generalP_count": gCount, "generalPScores": generalPScores}
+overallResultData = {"count": count,
+                     "electric_count": eCount, "electricScores": electricScores,
+                     "hydrogen_count": hCount, "hydrogenScores": hydrogenScores,
+                     "naturalG_count": nCount, "naturalGScores": naturalGScores,
+                     "generalP_count": gCount, "generalPScores": generalPScores,
+                     "individualResultData": {}}
 
-# update the sentiment scores in each powertrain type
-for e in sentiments:
-    resultData["electricScores"].update({e: resultData["electricScores"][e] / resultData["electric_count"]})
-    resultData["hydrogenScores"].update({e: resultData["hydrogenScores"][e] / resultData["hydrogen_count"]})
-    resultData["naturalGScores"].update({e: resultData["naturalGScores"][e] / resultData["naturalG_count"]})
-    resultData["generalPScores"].update({e: resultData["generalPScores"][e] / resultData["generalP_count"]})
+# update the sentiment scores in each power-train type
+for sentiment in sentiments:
+    overallResultData["electricScores"].update(
+        {sentiment: overallResultData["electricScores"][sentiment] / overallResultData["electric_count"]})
+    overallResultData["hydrogenScores"].update(
+        {sentiment: overallResultData["hydrogenScores"][sentiment] / overallResultData["hydrogen_count"]})
+    overallResultData["naturalGScores"].update(
+        {sentiment: overallResultData["naturalGScores"][sentiment] / overallResultData["naturalG_count"]})
+    overallResultData["generalPScores"].update(
+        {sentiment: overallResultData["generalPScores"][sentiment] / overallResultData["generalP_count"]})
 
 
 print(count)
 
-with open('results.json', 'w', encoding='utf-8') as file:
-    json.dump(resultData, file, ensure_ascii=False).encode("utf-8")
+individualResultData = {}
+for e in data:
+    individual = {"posts": [],
+                  "post_count": 0,
+                  "e_count": 0,
+                  "electric": {"positive": 0.0, "neutral": 0.0, "negative": 0.0,
+                               "joy": 0.0, "optimism": 0.0, "anger": 0.0, "sadness": 0.0},
+                  "h_count": 0,
+                  "hydrogen": {"positive": 0.0, "neutral": 0.0, "negative": 0.0,
+                               "joy": 0.0, "optimism": 0.0, "anger": 0.0, "sadness": 0.0},
+                  "n_count": 0,
+                  "natural_gas": {"positive": 0.0, "neutral": 0.0, "negative": 0.0,
+                                  "joy": 0.0, "optimism": 0.0, "anger": 0.0, "sadness": 0.0},
+                  "g_count": 0,
+                  "general": {"positive": 0.0, "neutral": 0.0, "negative": 0.0,
+                              "joy": 0.0, "optimism": 0.0, "anger": 0.0, "sadness": 0.0}
+                  }
 
-dataFile.close()
+    if e["author_id"] not in individualResultData:
+        if e["keyword"] == "electric":
+            individual["e_count"] = 1  # set the number of electric posts by this author to 1
+        if e["keyword"] == "hydrogen":
+            individual["h_count"] = 1  # set the number of hydrogen fuel cell posts by this author to 1
+        if e["keyword"] == "natural_gas":
+            individual["n_count"] = 1  # set the number natural gas combustion of posts by this author to 1
+        if e["keyword"] == "general":
+            individual["g_count"] = 1  # set the number of alternative power-train posts by this author to 1
+        for sentiment in sentiments:
+            individual[e["keyword"]][sentiment] = float(e[sentiment])
+        individual["posts"].append(e["conversation_id"])
+        individualResultData[e["author_id"]] = individual  # set the keys equal to e if they do not already exist
+    else:
+        individual = individualResultData[e["author_id"]]
+        if e["keyword"] == "electric":
+            individual["e_count"] += 1  # increment the number of electric posts by this author by 1
+        if e["keyword"] == "hydrogen":
+            individual["h_count"] += 1  # increment the number of hydrogen fuel cell posts by this author by 1
+        if e["keyword"] == "natural_gas":
+            individual["n_count"] += 1  # increment the number natural gas combustion of posts by this author by 1
+        if e["keyword"] == "general":
+            individual["g_count"] += 1  # increment the number of alternative power-train posts by this author by 1
+        for sentiment in sentiments:
+            individual[e["keyword"]][sentiment] += float(e[sentiment])
+        individual["posts"].append(e["conversation_id"])
+        individualResultData[e["author_id"]] = individual
+
+for e in individualResultData:
+    individualResultData[e]["post_count"] = len(individualResultData[e]["posts"])
+    if individualResultData[e]["e_count"] > 0:
+        for sentiment in sentiments:
+            individualResultData[e]["electric"].update(
+                {sentiment: individualResultData[e]["electric"][sentiment] / individualResultData[e]["e_count"]})
+    if individualResultData[e]["h_count"] > 0:
+        for sentiment in sentiments:
+            individualResultData[e]["hydrogen"].update(
+                {sentiment: individualResultData[e]["hydrogen"][sentiment] / individualResultData[e]["h_count"]})
+    if individualResultData[e]["n_count"] > 0:
+        for sentiment in sentiments:
+            individualResultData[e]["natural_gas"].update(
+                {sentiment: individualResultData[e]["natural_gas"][sentiment] / individualResultData[e]["n_count"]})
+    if individualResultData[e]["g_count"] > 0:
+        for sentiment in sentiments:
+            individualResultData[e]["general"].update(
+                {sentiment: individualResultData[e]["general"][sentiment] / individualResultData[e]["g_count"]})
+
+overallResultData["individualResultData"] = individualResultData
+
+with open('results.json', 'w', encoding='utf-8') as file:
+    json.dump(overallResultData, file, ensure_ascii=False)
+file.close()
