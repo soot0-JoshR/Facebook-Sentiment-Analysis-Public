@@ -1,35 +1,24 @@
-import os
-import numpy
-import json
 from transformers import AutoModelForSequenceClassification
 from transformers import AutoTokenizer, AutoConfig
-from scipy.special import softmax
+from scipy.special import softmaximport numpy
+import transformers
+import datetime
+import json
 import csv
-import time
+
+if transformers.is_tf_available():
+    print("TensorFlow is being used.")
+elif transformers.is_torch_available():
+    print("PyTorch is being used.")
+else:
+    print("Neither TensorFlow nor PyTorch is available.")
+
+# using this to keep track of how long it takes to process the data
+now = datetime.datetime.now()
+print("start time: " + str(now) + "\n")
 
 #
 """
-# unused code
-def clean(text):
-    rwords = ['@user', 'http', '#']
-    for word in rwords:
-        text = text.replace(word, "")
-    return text
-
-
-def preprocess(text):
-    text = text.replace('\n', ' ')
-    new_text = []
-    for t in text.split(" "):
-        t = '#' if t.startswith('\\x') else t
-        t = '#' if t.startswith('#') else t
-        t = '@user' if t.startswith('@') and len(t) > 1 else t
-        t = 'http' if t.startswith('http') else t
-        new_text.append(t)
-    return " ".join(new_text)
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 other models for the pipeline:
     'distilbert-base-uncased-finetuned-sst-2-english'
     'Seethal/sentiment_analysis_generic_dataset'
@@ -76,8 +65,6 @@ for e in dataList:
 
 for kwHit in kwHits:
     post = kwHit[2]
-    # post = preprocess(post)  # generalize text such as links and usernames
-    # post = clean(post)  # remove generalized text
 
     encoded_input = tokenizer(post, return_tensors='pt')  # prepare post text for the model
     result = model(**encoded_input)  # feed our encoded post text into the model
@@ -94,7 +81,8 @@ for kwHit in kwHits:
         kwHit.append(f"{numpy.round(float(results), 4)}")
         # kwHit.append(f" {label} {numpy.round(float(results), 4)}")
 
+now = datetime.datetime.now()
+print("finish time: " + str(now) + "\n")
 
 with open('data.json', 'w', encoding='utf-8') as file:
-    json.dump(kwHits, file, ensure_ascii=False).encode("utf-8")
-    
+    json.dump(kwHits, file, ensure_ascii=False)
